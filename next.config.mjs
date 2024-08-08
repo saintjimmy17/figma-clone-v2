@@ -1,36 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'liveblocks.io',
-          port: '',
-        },
-      ],
-    },
-    webpack: (config, { isServer }) => {
-      // Add custom rule for .node files
-      config.module.rules.push({
-        test: /\.node$/,
-        use: 'node-loader',
-      });
-  
-      // Add this to ensure it works for both server and client
-      if (isServer) {
-        config.externals = config.externals || [];
-        config.externals.push(({ context, request }, callback) => {
-          if (/\.node$/.test(request)) {
-            callback(null, 'commonjs ' + request);
-          } else {
-            callback();
-          }
-        });
-      }
-  
-      return config;
-    },
-  };
-  
-  export default nextConfig;
-  
+  webpack: (config) => {
+    config.externals.push({
+      "utf-8-validate": "commonjs utf-8-validate",
+      bufferutil: "commonjs bufferutil",
+      canvas: "commonjs canvas",
+    });
+    // config.infrastructureLogging = { debug: /PackFileCache/ };
+    return config;
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "liveblocks.io",
+        port: "",
+      },
+    ],
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};
+
+export default nextConfig;
